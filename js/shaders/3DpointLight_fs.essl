@@ -1,0 +1,20 @@
+shaderSource[document.currentScript.src.split('js/shaders/')[1]] = `
+	precision highp float;
+	uniform vec4 lightPos[10];
+	uniform vec4 lightPowerDensity[10];
+	varying vec2 texCoord;
+	varying vec3 color;
+	varying vec3 worldNormal;
+	varying vec4 worldPos;
+	uniform sampler2D colorTexture;
+
+	void main(void) {
+		//gl_FragColor = vec4(worldNormal, 1.0);
+		vec4 lightDir = normalize(lightPos[0]/lightPos[0].w - worldPos);
+		float scale = pow(length(lightDir),2.0);
+		vec4 lightPower = lightPowerDensity[0]/scale;
+		vec3 temp = texture2D(colorTexture, texCoord).rgb*(dot(normalize(worldNormal), lightDir.xyz));
+		gl_FragColor = vec4((lightPower.rgb*temp),1);
+
+	}
+`;

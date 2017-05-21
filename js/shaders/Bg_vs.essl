@@ -1,0 +1,25 @@
+shaderSource[document.currentScript.src.split('js/shaders/')[1]] = `
+	uniform mat4 rayDirMatrix;
+	attribute vec3 vertexPosition;
+	attribute vec2 vertexTexCoord;
+	attribute vec3 vertexNormal;
+	attribute vec3 vertexColor;
+	//varying texCoord;
+	varying vec4 rayDir;
+
+	  	  
+	void main(void) {
+		vec4 xnp = vec4(vertexPosition,1);
+
+		gl_Position = vec4(xnp.xy,0.9999999,1);
+
+		rayDir = xnp*rayDirMatrix;
+
+
+
+		//texCoord = vertexTexCoord;
+
+
+	}
+
+`;

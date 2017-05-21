@@ -1,0 +1,28 @@
+shaderSource[document.currentScript.src.split('js/shaders/')[1]] = `
+	uniform vec3 quadPosition;
+	uniform mat4 modelViewProjMatrix;
+	uniform mat4 modelMatrix;
+	uniform mat4 modelMatrixInverse;
+	uniform vec3 camPos;
+	uniform mat4 camViewProjMatrix;
+	attribute vec3 vertexPosition;
+	attribute vec2 vertexTexCoord;
+	attribute vec3 vertexNormal;
+	attribute vec3 vertexColor;
+	varying vec3 color;
+	varying vec2 texCoord;
+	varying vec4 worldPos;
+	varying vec3 worldNormal;
+	varying vec3 cameraPos;
+
+	  	  
+	void main(void) {
+		gl_Position = vec4(vertexPosition, 1)*modelViewProjMatrix;
+		worldPos = vec4(vertexPosition, 1)*modelMatrix;
+		color=vertexColor;
+		texCoord=vertexTexCoord;
+		worldNormal = (modelMatrixInverse * vec4(vertexNormal, 0)).xyz;
+		cameraPos = camPos;
+	}
+
+`;

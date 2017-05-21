@@ -1,0 +1,36 @@
+shaderSource[document.currentScript.src.split('js/shaders/')[1]] = `
+	precision highp float;
+	uniform vec4 lightPos[10];
+	uniform vec4 lightPowerDensity[10];
+	varying vec3 cameraPos;
+	varying vec2 texCoord;
+	varying vec3 color;
+	varying vec3 worldNormal;
+	varying vec4 worldPos;
+	uniform sampler2D colorTexture;
+
+	void main(void) {
+
+		vec3 specularColor = vec3(2,2,2);
+		float shininess = 30.0;
+
+		vec3 camDir = -cameraPos;
+		vec3 halfway = camDir/2.0;
+
+		vec4 L = normalize(lightPos[0]);
+		vec3 R = reflect(L.xyz,worldNormal);
+
+		//gl_FragColor = textureCube( envmapTexture, reflect(camDir, worldNormal));
+
+
+		vec4 specularLight = vec4(lightPowerDensity[0].rgb*specularColor*pow(dot(normalize(halfway),worldNormal), shininess),1);
+
+		vec4 diffuseLight = vec4((lightPowerDensity[0].rgb*texture2D(colorTexture, texCoord).rgb
+														*(dot(normalize(worldNormal), lightPos[0].xyz))),1);
+
+		vec4 ambientLight = vec4(texture2D(colorTexture, texCoord).rgb*.4,1);
+
+		gl_FragColor = ambientLight+diffuseLight+specularLight;
+
+	}
+`;
