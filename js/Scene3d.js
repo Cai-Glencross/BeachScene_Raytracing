@@ -13,16 +13,6 @@ var Scene3d = function(gl){
   this.fsBackground = new Shader(gl, gl.FRAGMENT_SHADER, "Bg_fs.essl");
   this.bgProgram = new Program(gl, this.vsBackground, this.fsBackground);
 
-  //cube part
-  this.skyCubeTexture = new
-  TextureCube(gl, [
-    "js/res/posx.jpg",
-    "js/res/negx.jpg",
-    "js/res/posy.jpg",
-    "js/res/negy.jpg",
-    "js/res/posz.jpg",
-    "js/res/negz.jpg",]
-    );
 
     //lightsource array
     this.lightSourceArray = [];
@@ -41,7 +31,6 @@ var Scene3d = function(gl){
 
 
     //bgMaterial
-    this.bgTexture = new Texture2D(gl, "js/res/probeTexture.png");
     this.bgMaterial = new Material(gl,this.bgProgram);
     //this.bgMaterial.colorTexture.set(this.bgTexture);
 
@@ -67,7 +56,8 @@ var Scene3d = function(gl){
 
     this.ball = new ClippedQuadric(sphere, noClipper);
     this.ball.transform(new Mat4().set().scale(new Vec3(.1,.1,.1)).translate(new Vec3(1,0,-6)));
-    this.ballVelocity = new Vec3(0,0,0);
+    this.ballAcceleration = new Vec3(0,-.1,0);
+    this.ballVelocity = new Vec3(0,-.1,0);
     this.ballPosition = new Vec3(1,0,-6);
 
     clippedQuadrics.push(this.ball);
@@ -311,10 +301,12 @@ Scene3d.prototype.update = function(gl, keysPressed){
 
    this.camera.move(dt,keysPressed);
 
-    this.ballAcceleration = new Vec3(0,-.1,0);
-
-    if(this.ballPosition.y<-.12){
+    if(this.ballVelocity.y<0.0&&this.ballPosition.y<-.115){
       this.ballVelocity.y = -this.ballVelocity.y;
+      if (this.ballVelocity.y<.01){
+        this.ballAcceleration= new Vec3(0,0,0);
+        this.ballVelocity = new Vec3(0,0,0);
+      }
 
     }
     this.ballVelocity.add(this.ballAcceleration.times(dt));
@@ -328,7 +320,6 @@ Scene3d.prototype.update = function(gl, keysPressed){
       this.timeElapsed+=dt;
     }
 
-    console.log(this.timeElapsed);
 
     this.bgMaterial.dt.set(this.timeElapsed);
 

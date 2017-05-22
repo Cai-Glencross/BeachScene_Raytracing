@@ -1,2 +1,1 @@
-# JupiterLander
 # BeachScene_Raytracing
